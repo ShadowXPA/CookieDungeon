@@ -1,0 +1,59 @@
+[gd_scene load_steps=9 format=3 uid="uid://bpp1gdbqg4mhx"]
+
+[ext_resource type="Texture2D" uid="uid://xfhafhrmeh5k" path="res://icon.svg" id="1_6xdwp"]
+[ext_resource type="Script" uid="uid://ci43ts8wqy7c3" path="res://Scripts/Characters/Player/Player.cs" id="1_j341n"]
+[ext_resource type="Script" uid="uid://dwb6xqhtda5gn" path="res://Scripts/States/StateMachine.cs" id="3_xf5fp"]
+[ext_resource type="Script" uid="uid://bm0lxqn3rrth0" path="res://Scripts/Characters/Player/States/PlayerIdle.cs" id="4_osktb"]
+[ext_resource type="Script" uid="uid://cmdbp2cqcbqky" path="res://Scripts/Characters/Player/States/PlayerMove.cs" id="5_7vev3"]
+[ext_resource type="Script" uid="uid://cxi1no03h482n" path="res://Scripts/Characters/Player/States/PlayerAttack.cs" id="6_osktb"]
+[ext_resource type="Script" uid="uid://4klifvuq0erl" path="res://Scripts/Characters/Player/States/PlayerDash.cs" id="7_7vev3"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ygrrk"]
+radius = 16.0
+
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("StateMachine")]
+collision_mask = 16
+motion_mode = 1
+script = ExtResource("1_j341n")
+StateMachine = NodePath("StateMachine")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("1_6xdwp")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ygrrk")
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("InitialState")]
+script = ExtResource("3_xf5fp")
+InitialState = NodePath("Idle")
+metadata/_custom_type_script = "uid://dwb6xqhtda5gn"
+
+[node name="Idle" type="Node" parent="StateMachine"]
+script = ExtResource("4_osktb")
+metadata/_custom_type_script = "uid://c8bj5iml5jteg"
+
+[node name="Move" type="Node" parent="StateMachine"]
+script = ExtResource("5_7vev3")
+metadata/_custom_type_script = "uid://c8bj5iml5jteg"
+
+[node name="Attack" type="Node" parent="StateMachine"]
+script = ExtResource("6_osktb")
+metadata/_custom_type_script = "uid://c8bj5iml5jteg"
+
+[node name="Dash" type="Node" parent="StateMachine"]
+script = ExtResource("7_7vev3")
+metadata/_custom_type_script = "uid://c8bj5iml5jteg"
+
+[node name="StateLabel" type="Label" parent="."]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 22.0
+offset_right = 1.0
+offset_bottom = 45.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_alignment = 1
+vertical_alignment = 1
