@@ -7,22 +7,25 @@ namespace CookieDungeon.Scripts.Characters.Player;
 
 public partial class Player : CharacterBody2D
 {
-	// [Export]
-	// public float Speed { get; set; } = 500.0f;
-	// [Export]
-	// public float Acceleration { get; set; } = 5000.0f;
-	// [Export]
-	// public float Deceleration { get; set; } = 7500.0f;
-
 	[Export]
 	public StateMachine? StateMachine { get; set; }
 	[Export]
-	public Stats Stats { get; set; } = new();
+	public Stats Stats { get; set; } = ResourceManager.Load<Stats>(ResourceManager.Identifier.PlayerStats);
+	public Skills Skills { get; set; } = new();
+    public IInputController InputController { get; private set; } = PlayerInputController.Instance;
+	public AnimatedSprite2D? Character { get; private set; }
+	public AnimationPlayer? Animations { get; private set; }
+	public Marker2D? ProjectileSpawner { get; private set; }
+	public Node? ProjectileContainer { get; private set; }
 
 	public override void _Ready()
 	{
-		StateMachine?.Initialize(this, inputController: PlayerInputController.Instance);
+		StateMachine?.Initialize(this);
 
+		Character = GetNode<AnimatedSprite2D>("%Character");
+		Animations = GetNode<AnimationPlayer>("%Animations");
+		ProjectileSpawner = GetNode<Marker2D>("%ProjectileSpawner");
+		ProjectileContainer = GetNode<Node>("%ProjectileContainer");
 		var stateLabel = GetNode<Label>("%StateLabel");
 
 		SignalBus.StateChanged += (_, newState) =>
@@ -44,11 +47,5 @@ public partial class Player : CharacterBody2D
 	public override void _PhysicsProcess(double delta)
 	{
 		StateMachine?.ProcessPhysics(delta);
-
-		// var direction = _inputController.GetDirection();
-
-		// Velocity = Velocity.MoveToward(direction * Speed,
-		// 	(direction == Vector2.Zero ? Deceleration : Acceleration) * (float)delta);
-		// MoveAndSlide();
 	}
 }

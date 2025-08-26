@@ -21,4 +21,7 @@ public partial class Stats : Resource
     public float CriticalRate { get; set; } = .5f;
     [Export]
     public float CriticalDamage { get; set; } = 1.5f;
+    public float Acceleration => Speed * 10.0f;
+    public float Deceleration => Speed * 15.0f;
+    public float Dash => Speed * 5.0f;
 }

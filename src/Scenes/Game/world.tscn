@@ -1,8 +1,24 @@
-[gd_scene load_steps=2 format=3 uid="uid://ckgt0ai7efhbh"]
+[gd_scene load_steps=3 format=3 uid="uid://ckgt0ai7efhbh"]
 
 [ext_resource type="PackedScene" uid="uid://bpp1gdbqg4mhx" path="res://Characters/Player/player.tscn" id="1_hjl0q"]
+[ext_resource type="PackedScene" uid="uid://dj1im7ywo8q00" path="res://Objects/wall.tscn" id="2_mu2i5"]
 
 [node name="World" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource("1_hjl0q")]
-position = Vector2(605, 317)
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+
+[node name="Wall" parent="." instance=ExtResource("2_mu2i5")]
+position = Vector2(621, 134)
+scale = Vector2(3.20674, 5.22183)
+
+[node name="Wall2" parent="." instance=ExtResource("2_mu2i5")]
+position = Vector2(868, 248)
+rotation = 0.832403
+scale = Vector2(3.97522, 6.58222)
+
+[node name="Wall3" parent="." instance=ExtResource("2_mu2i5")]
+position = Vector2(302, -71)
+rotation = -0.0018872
+scale = Vector2(6.39299, 4.91215)

@@ -16,9 +16,9 @@ public class PlayerInputController : IInputController
         return Input.IsActionJustPressed("normal_attack");
     }
 
-    public Vector2? GetTargetPosition(Node2D? origin)
+    public Vector2 GetTargetPosition(Node2D? origin)
     {
-        return origin?.GetGlobalMousePosition() - origin?.Position;
+        return origin?.GetGlobalMousePosition() ?? Vector2.Up;
     }
 
     public bool IsDashing()
