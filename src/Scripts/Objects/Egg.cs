@@ -1,3 +1,5 @@
+using CookieDungeon.Scripts.Characters;
+using CookieDungeon.Scripts.Characters.Enemy;
 using CookieDungeon.Scripts.Utils;
 using Godot;
 
@@ -5,14 +7,19 @@ namespace CookieDungeon.Scripts.Objects;
 
 public partial class Egg : Area2D
 {
+    [Export]
+    public Stats Stats { get; private set; } = new();
+
     private AnimatedSprite2D? _animations;
+    private CollisionShape2D? _hitbox;
     private Vector2? _direction;
-    private float _speed = 500.0f;
-    private float _lifetime = 1.0f;
+    private float _lifetime = .75f;
 
     public override void _Ready()
     {
+        Stats = new (ResourceManager.Load<Stats>(ResourceManager.Identifier.EggStats));
         _animations = GetNode<AnimatedSprite2D>("%Animations");
+        _hitbox = GetNode<CollisionShape2D>("%HitBox");
         _animations.AnimationFinished += QueueFree;
         BodyEntered += OnHit;
     }
@@ -29,7 +36,7 @@ public partial class Egg : Area2D
         if (_direction is null) return;
 
         var direction = (Vector2)_direction;
-        GlobalPosition += direction * _speed * (float)delta;
+        GlobalPosition += direction * Stats.Speed * (float)delta;
 
         _lifetime -= (float)delta;
 
@@ -42,7 +49,6 @@ public partial class Egg : Area2D
     public void MoveTowardTarget(Vector2 target, Vector2 direction)
     {
         _direction = direction;
-        GD.PrintS("Egg Direction:", _direction);
         this.LookAtPoint(target);
         _animations?.Play("thrown");
     }
@@ -51,9 +57,11 @@ public partial class Egg : Area2D
     {
         Break();
 
-        if (body is CharacterBody2D characterBody2D)
+        if (body is Enemy enemy)
         {
-            // TODO: do dmg
+			var crit = GD.Randf();
+			var dmg = crit <= Stats.CriticalRate ? Mathf.FloorToInt(Stats.Attack * Stats.CriticalDamage) : Stats.Attack;
+			enemy.ApplyDamage(dmg);
         }
     }
 
@@ -61,5 +69,6 @@ public partial class Egg : Area2D
     {
         _direction = null;
         _animations?.Play("broken");
+        _hitbox?.SetDeferred(CollisionShape2D.PropertyName.Disabled, true);
     }
 }

@@ -12,7 +12,7 @@ public class Skills
     };
 
     public Skill? SpecialAttack { get; set; }
-    public Skill? Dash { get; } = new()
+    public Skill Dash { get; } = new()
     {
         Animation = "dash",
         Cooldown = 5.0f,

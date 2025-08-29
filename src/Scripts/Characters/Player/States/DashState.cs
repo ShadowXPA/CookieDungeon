@@ -6,7 +6,7 @@ namespace CookieDungeon.Scripts.Characters.Player.States;
 
 public partial class DashState : State
 {
-    private float _dashDistance = 250.0f;
+    private float _dashDistance = 300.0f;
     private float _dashDuration;
     private Vector2? _direction;
 
@@ -16,21 +16,16 @@ public partial class DashState : State
         if (subject is null) return;
 
         subject.Velocity = Vector2.Zero;
+        subject.Stats.Mana -= subject.Skills.Dash.Cost;
+        subject.Skills.Dash.CurrentCooldown = subject.Skills.Dash.Cooldown;
+        SignalBus.BroadcastManaUpdated(subject.Stats.Mana, subject.Stats.MaxMana);
+        SignalBus.BroadcastDashCooldownUpdated(subject.Skills.Dash.CurrentCooldown, subject.Skills.Dash.Cooldown);
 
         _dashDuration = _dashDistance / subject.Stats.Dash;
         var target = subject.InputController.GetTargetPosition(subject);
         _direction = (target - subject.GlobalPosition).Normalized();
-        subject.LookAtPoint(target);
-
-        subject.Modulate = Color.Color8(255, 255, 0);
-    }
-
-    public override void Exit()
-    {
-        var subject = GetSubject<Player>();
-        if (subject is null) return;
-
-        subject.Modulate = Color.Color8(255, 255, 255, 255);
+        subject.LookAtTarget(target);
+        subject.Animations?.ResetAndPlay(subject.Skills.Dash.Animation);
     }
 
     public override string? ProcessPhysics(double delta)

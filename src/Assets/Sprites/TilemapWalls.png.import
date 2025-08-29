@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bcpm3amgx62x0"
-path="res://.godot/imported/Spatula.png-1b4bec6376cba26c05621d1882b79230.ctex"
+uid="uid://pxnxrek11m45"
+path="res://.godot/imported/TilemapWalls.png-eee43e6421687d2c4a17c82df77bf57c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Sprites/Spatula.png"
-dest_files=["res://.godot/imported/Spatula.png-1b4bec6376cba26c05621d1882b79230.ctex"]
+source_file="res://Assets/Sprites/TilemapWalls.png"
+dest_files=["res://.godot/imported/TilemapWalls.png-eee43e6421687d2c4a17c82df77bf57c.ctex"]
 
 [params]
 

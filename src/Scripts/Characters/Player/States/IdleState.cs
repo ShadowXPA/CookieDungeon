@@ -6,13 +6,16 @@ namespace CookieDungeon.Scripts.Characters.Player.States;
 
 public partial class IdleState : State
 {
+    private float _regenCooldown = 2.5f;
+
     public override void Enter()
     {
         var subject = GetSubject<Player>();
         if (subject is null) return;
 
         subject.Velocity = Vector2.Zero;
-        subject.Character?.Play("default");
+        _regenCooldown = 2.5f;
+        subject.Animations?.ResetAndPlay("idle");
     }
 
     public override string? ProcessInput(InputEvent @event)
@@ -23,17 +26,37 @@ public partial class IdleState : State
         if (@event is InputEventMouseMotion mouseMotion)
         {
             var target = subject.InputController.GetTargetPosition(subject);
-            subject.LookAtPoint(target);
+            subject.LookAtTarget(target);
         }
 
-        if (subject.InputController.IsDashing())
+        if (subject.InputController.IsDashing() && subject.Skills.Dash.CanCast(subject.Stats.Mana))
         {
             return "dash";
         }
 
-        if (subject.InputController.IsNormalAttacking())
+        if (subject.InputController.IsNormalAttacking() && subject.Skills.NormalAttack.CanCast(subject.Stats.Mana))
         {
             return "attack";
+        }
+
+        return null;
+    }
+
+    public override string? ProcessFrame(double delta)
+    {
+        var subject = GetSubject<Player>();
+        if (subject is null) return null;
+
+        _regenCooldown -= (float)delta;
+
+        if (_regenCooldown <= 0)
+        {
+            var stats = subject.Stats;
+            _regenCooldown = 2.5f;
+            stats.RegenHealth(true);
+            stats.RegenMana(true);
+            SignalBus.BroadcastHealthUpdated(stats.Health, stats.MaxHealth);
+            SignalBus.BroadcastManaUpdated(stats.Mana, stats.MaxMana);
         }
 
         return null;

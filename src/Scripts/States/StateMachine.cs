@@ -15,6 +15,8 @@ public partial class StateMachine : Node
     public ImmutableDictionary<string, State> States { get => _states.ToImmutableDictionary(); }
     private readonly Dictionary<string, State> _states = [];
 
+    public Action<string, string>? StateChanged;
+
     public void Initialize(CharacterBody2D? subject = null)
     {
         var states = GetChildren();
@@ -60,11 +62,6 @@ public partial class StateMachine : Node
         state = state.ToLower();
         var currentState = CurrentState?.Name.ToString().ToLower();
 
-        if (currentState == state)
-        {
-            return;
-        }
-
         var oldState = CurrentState;
         var hasState = _states.TryGetValue(state, out var newState);
 
@@ -77,6 +74,6 @@ public partial class StateMachine : Node
         CurrentState = newState;
         CurrentState?.Enter();
 
-        SignalBus.BroadcastStateChanged(oldState?.Name ?? string.Empty, newState?.Name ?? string.Empty);
+        StateChanged?.Invoke(oldState?.Name ?? string.Empty, newState?.Name ?? string.Empty);
     }
 }

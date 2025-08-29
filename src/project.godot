@@ -16,6 +16,7 @@ config/version="1.0.0.0"
 run/main_scene="uid://ckgt0ai7efhbh"
 config/use_custom_user_dir=true
 config/features=PackedStringArray("4.4", "C#", "Forward Plus")
+boot_splash/bg_color=Color(0, 0, 0, 1)
 config/icon="res://icon.svg"
 
 [debug]
@@ -71,6 +72,7 @@ dash={
 2d_physics/layer_4="EnemyProjectile"
 2d_physics/layer_5="Walls"
 2d_physics/layer_6="Environment"
+2d_physics/layer_7="HurtBox"
 
 [rendering]
 

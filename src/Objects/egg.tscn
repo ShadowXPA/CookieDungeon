@@ -98,10 +98,8 @@ script = ExtResource("1_ybp4c")
 [node name="Animations" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
 sprite_frames = SubResource("SpriteFrames_7t0ap")
-animation = &"broken"
 autoplay = "default"
-frame = 4
-frame_progress = 1.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="HitBox" type="CollisionShape2D" parent="."]
+unique_name_in_owner = true
 shape = SubResource("CircleShape2D_1akxr")
