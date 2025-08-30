@@ -10,7 +10,7 @@ public partial class Enemy : CharacterBody2D
 	[Export]
 	public StateMachine? StateMachine { get; private set; }
 	[Export]
-	public Stats Stats { get; private set; } = new();
+	public required Stats Stats { get; set; }
 	public Area2D? AttackRange { get; private set; }
 	public Area2D? AggroRange { get; private set; }
 	public Player.Player? Target { get; private set; }
@@ -18,6 +18,7 @@ public partial class Enemy : CharacterBody2D
 	public AnimationPlayer? Animations { get; private set; }
 	public Area2D? WeaponHitBox { get; private set; }
 	public Node2D? CharacterBoxes { get; private set; }
+	public bool IsDead { get; private set; }
 	private ProgressBar? _healthBar;
 	private Label? _level;
 	private float _lastX;
@@ -34,7 +35,9 @@ public partial class Enemy : CharacterBody2D
 		_healthBar = GetNode<ProgressBar>("%HPBar");
 		_level = GetNode<Label>("%Level");
 
-		SetStats(new(ResourceManager.Load<Stats>(ResourceManager.Identifier.EnemyStats)));
+		if (Stats is not null)
+			SetStats(Stats);
+		// SetStats(new(ResourceManager.Load<Stats>(ResourceManager.Identifier.EnemyStats)));
 		ConnectEvents();
 
 		StateMachine?.Initialize(this);
@@ -108,6 +111,8 @@ public partial class Enemy : CharacterBody2D
 	{
 		DisconnectEvents();
 		StateMachine?.CallDeferred(StateMachine.MethodName.ChangeState, "Death");
+		IsDead = true;
+		SignalBus.BroadcastMonsterKilled(Stats.Experience);
 	}
 
 	private void AttackPlayer(Node2D body)

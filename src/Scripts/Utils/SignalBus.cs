@@ -10,4 +10,6 @@ public static class SignalBus
     public static void BroadcastManaUpdated(int mana, int maxMana) => ManaUpdated?.Invoke(mana, maxMana);
     public static Action<float, float>? DashCooldownUpdated;
     public static void BroadcastDashCooldownUpdated(float cooldown, float maxCooldown) => DashCooldownUpdated?.Invoke(cooldown, maxCooldown);
+    public static Action<int>? MonsterKilled;
+    public static void BroadcastMonsterKilled(int experience) => MonsterKilled?.Invoke(experience);
 }

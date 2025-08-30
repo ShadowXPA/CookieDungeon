@@ -28,6 +28,7 @@ public partial class Stats : Resource
     public float Acceleration => Speed * 10.0f;
     public float Deceleration => Speed * 15.0f;
     public float Dash => Speed * 5.0f;
+    [Export]
     public int Experience { get; private set; } = 0;
     public int HealthRate { get; private set; } = 1;
     public int ManaRate { get; private set; } = 5;
