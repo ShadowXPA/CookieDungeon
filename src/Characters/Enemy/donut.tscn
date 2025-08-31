@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://cc6j6xahx3t2y"]
+[gd_scene load_steps=41 format=3 uid="uid://cc6j6xahx3t2y"]
 
 [ext_resource type="Script" uid="uid://c656hfjvi0dvv" path="res://Scripts/Characters/Enemy/RangedEnemy.cs" id="1_65h4r"]
 [ext_resource type="PackedScene" uid="uid://c3evviumjx302" path="res://Objects/sprinkle.tscn" id="2_qkwtr"]
@@ -498,6 +498,9 @@ radius = 400.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_tfjh3"]
 radius = 25.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qkwtr"]
+bg_color = Color(0.627451, 0, 0, 1)
+
 [node name="Donut" type="CharacterBody2D" node_paths=PackedStringArray("ProjectileSpawner", "ProjectileContainer", "StateMachine", "Damage")]
 collision_layer = 2
 collision_mask = 19
@@ -627,6 +630,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 10)
 layout_mode = 2
 mouse_filter = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_qkwtr")
 show_percentage = false
 
 [node name="HPLabel" type="Label" parent="HBoxContainer/CenterContainer"]

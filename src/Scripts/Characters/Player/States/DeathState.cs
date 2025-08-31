@@ -13,5 +13,6 @@ public partial class DeathState : State
 
         subject.Velocity = Vector2.Zero;
         subject.Animations?.ResetAndPlay("death");
+        SignalBus.BroadcastPlayerDied();
     }
 }

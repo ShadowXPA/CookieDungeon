@@ -20,7 +20,6 @@ public partial class Player : Character
 	public Node2D? CharacterBoxes { get; private set; }
 
 	private Marker2D? _teleportTarget;
-	private Label? _statsLabel;
 
 	public override void _Ready()
 	{
@@ -33,10 +32,6 @@ public partial class Player : Character
 		ProjectileContainer = GetNode<Node>("%ProjectileContainer");
 		WeaponHitBox = GetNode<Area2D>("%HitBox");
 		CharacterBoxes = GetNode<Node2D>("%CharacterBoxes");
-		var stateLabel = GetNode<Label>("%StateLabel");
-		_statsLabel = GetNode<Label>("%StatsLabel");
-
-		_statsLabel.Text = $"{Stats.Attack}\n{Stats.Defense}";
 
 		SignalBus.BroadcastLevelUpdated(Stats.Level);
 		SignalBus.BroadcastHealthUpdated(Stats.Health, Stats.MaxHealth);
@@ -47,15 +42,7 @@ public partial class Player : Character
 
 		WeaponHitBox.BodyEntered += DamageEnemy;
 
-		if (StateMachine is not null)
-		{
-			StateMachine.StateChanged += (_, newState) =>
-			{
-				stateLabel.Text = newState;
-			};
-
-			StateMachine.Initialize(this);
-		}
+		StateMachine?.Initialize(this);
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
@@ -66,6 +53,11 @@ public partial class Player : Character
 		{
 			InputController = EmptyInputController.Instance;
 			Animations?.ResetAndPlay("teleport");
+		}
+
+		if (@event.IsAction("pause"))
+		{
+			SignalBus.BroadcastPaused(Stats);
 		}
 	}
 
@@ -133,11 +125,6 @@ public partial class Player : Character
 		SignalBus.BroadcastLevelUpdated(Stats.Level);
 		SignalBus.BroadcastHealthUpdated(Stats.Health, Stats.MaxHealth);
 		SignalBus.BroadcastManaUpdated(Stats.Mana, Stats.MaxMana);
-
-		if (_statsLabel is not null)
-		{
-			_statsLabel.Text = $"{Stats.Attack}\n{Stats.Defense}";
-		}
 	}
 
 	private void DamageEnemy(Node2D body)

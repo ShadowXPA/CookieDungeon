@@ -42,7 +42,8 @@ public partial class Door : StaticBody2D
 	{
 		if (_interaction is not null)
 		{
-			_interaction.BodyExited -= OnPlayerEnter;
+			_interaction.BodyEntered -= OnPlayerEnter;
+			_interaction.BodyExited -= OnPlayerExit;
 		}
 
 		SignalBus.MonsterKilled -= MonsterKilled;

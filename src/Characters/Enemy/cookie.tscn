@@ -1,4 +1,4 @@
-[gd_scene load_steps=52 format=3 uid="uid://c7bycn6um7a4p"]
+[gd_scene load_steps=53 format=3 uid="uid://c7bycn6um7a4p"]
 
 [ext_resource type="Script" uid="uid://cigais4nn2s64" path="res://Scripts/Characters/Enemy/SummonerEnemy.cs" id="1_i3tk2"]
 [ext_resource type="PackedScene" uid="uid://bhlp55sh5vxvf" path="res://Objects/chocchip.tscn" id="2_2sxt7"]
@@ -620,6 +620,9 @@ radius = 400.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_tfjh3"]
 radius = 15.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8knu4"]
+bg_color = Color(0.627451, 0, 0, 1)
+
 [node name="Cookie" type="CharacterBody2D" node_paths=PackedStringArray("EnemySpawners", "ProjectileSpawner", "ProjectileContainer", "StateMachine", "Damage")]
 collision_layer = 2
 collision_mask = 19
@@ -763,6 +766,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 10)
 layout_mode = 2
 mouse_filter = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_8knu4")
 show_percentage = false
 
 [node name="HPLabel" type="Label" parent="HBoxContainer/CenterContainer"]

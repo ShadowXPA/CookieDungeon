@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://cblbgv7ls3m83"]
+[gd_scene load_steps=42 format=3 uid="uid://cblbgv7ls3m83"]
 
 [ext_resource type="Script" uid="uid://duai4ijaskngk" path="res://Scripts/Characters/Enemy/Enemy.cs" id="1_kmuhc"]
 [ext_resource type="Texture2D" uid="uid://c4mja57fdvx1l" path="res://Assets/Sprites/GingerMan.png" id="2_oslwf"]
@@ -523,6 +523,9 @@ radius = 500.0
 radius = 13.0
 height = 56.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rql6c"]
+bg_color = Color(0.627451, 0, 0, 1)
+
 [node name="GingerMan" type="CharacterBody2D" node_paths=PackedStringArray("StateMachine", "Damage")]
 collision_layer = 2
 collision_mask = 19
@@ -643,6 +646,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 10)
 layout_mode = 2
 mouse_filter = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_rql6c")
 show_percentage = false
 
 [node name="HPLabel" type="Label" parent="HBoxContainer/CenterContainer"]

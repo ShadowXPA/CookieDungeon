@@ -1,7 +1,15 @@
+using CookieDungeon.Scripts.Characters;
+
 namespace CookieDungeon.Scripts.Utils;
 
 public static class SignalBus
 {
+    public static Action<Stats>? Paused;
+    public static void BroadcastPaused(Stats stats) => Paused?.Invoke(stats);
+    public static Action? Unpaused;
+    public static void BroadcastUnpaused() => Unpaused?.Invoke();
+    public static Action? PlayerDied;
+    public static void BroadcastPlayerDied() => PlayerDied?.Invoke();
     public static Action<int>? LevelUpdated;
     public static void BroadcastLevelUpdated(int level) => LevelUpdated?.Invoke(level);
     public static Action<int, int>? HealthUpdated;
