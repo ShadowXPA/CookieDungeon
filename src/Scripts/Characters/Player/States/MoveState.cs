@@ -28,12 +28,12 @@ public partial class MoveState : State
             subject.LookAtTarget(target);
         }
 
-        if (subject.InputController.IsDashing() && subject.Skills.Dash.CanCast(subject.Stats.Mana))
+        if (subject.InputController.IsDashing() && subject.Skills.Dash.CanCast(subject.Stats.Mana + subject.Stats.Level))
         {
             return "dash";
         }
 
-        if (subject.InputController.IsNormalAttacking() && subject.Skills.NormalAttack.CanCast(subject.Stats.Mana))
+        if (subject.InputController.IsNormalAttacking() && subject.Skills.NormalAttack.CanCast())
         {
             return "attack";
         }

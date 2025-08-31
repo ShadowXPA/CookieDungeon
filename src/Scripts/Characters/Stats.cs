@@ -29,7 +29,7 @@ public partial class Stats : Resource
     public float Deceleration => Speed * 15.0f;
     public float Dash => Speed * 5.0f;
     [Export]
-    public int Experience { get; private set; } = 0;
+    public int Experience { get; set; } = 0;
     public int HealthRate { get; private set; } = 1;
     public int ManaRate { get; private set; } = 5;
 
@@ -88,8 +88,5 @@ public partial class Stats : Resource
         Defense += Level;
         HealthRate += Level;
         ManaRate += Level;
-        // SignalBus.BroadcastLevelUpdated(Level);
-        // SignalBus.BroadcastHealthUpdated(Health, MaxHealth);
-        // SignalBus.BroadcastManaUpdated(Mana, MaxMana);
     }
 }

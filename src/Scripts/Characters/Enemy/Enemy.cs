@@ -5,12 +5,14 @@ using Godot;
 
 namespace CookieDungeon.Scripts.Characters.Enemy;
 
-public partial class Enemy : CharacterBody2D
+public partial class Enemy : Character
 {
 	[Export]
-	public StateMachine? StateMachine { get; private set; }
+	public int Level { get; set; }
 	[Export]
-	public required Stats Stats { get; set; }
+	public bool IsMiniboss { get; private set; }
+	[Export]
+	public StateMachine? StateMachine { get; private set; }
 	public Area2D? AttackRange { get; private set; }
 	public Area2D? AggroRange { get; private set; }
 	public Player.Player? Target { get; private set; }
@@ -21,6 +23,7 @@ public partial class Enemy : CharacterBody2D
 	public bool IsDead { get; private set; }
 	private ProgressBar? _healthBar;
 	private Label? _level;
+	private Label? _hpLabel;
 	private float _lastX;
 	private bool _connected;
 
@@ -33,13 +36,19 @@ public partial class Enemy : CharacterBody2D
 		WeaponHitBox = GetNode<Area2D>("%HitBox");
 		CharacterBoxes = GetNode<Node2D>("%CharacterBoxes");
 		_healthBar = GetNode<ProgressBar>("%HPBar");
+		_hpLabel = GetNode<Label>("%HPLabel");
 		_level = GetNode<Label>("%Level");
 
 		if (Stats is not null)
 			SetStats(Stats);
-		// SetStats(new(ResourceManager.Load<Stats>(ResourceManager.Identifier.EnemyStats)));
-		ConnectEvents();
 
+		if (Level != 0)
+		{
+			var baseStats = ResourceManager.Load<Stats>(ResourceManager.Identifier.EnemyStats);
+			SetStatsBased(baseStats);
+		}
+
+		ConnectEvents();
 		StateMachine?.Initialize(this);
 	}
 
@@ -83,22 +92,48 @@ public partial class Enemy : CharacterBody2D
 			_healthBar.Value = Stats.Health;
 		}
 
+		if (_hpLabel is not null)
+		{
+			_hpLabel.Text = $"{Stats.Health}/{Stats.MaxHealth}";
+		}
+
 		if (_level is not null)
 		{
 			_level.Text = $"Lv. {Stats.Level}";
 		}
 	}
 
-	public void ApplyDamage(int dmg)
+	public void SetStatsBased(Stats baseStats)
 	{
-		var finalDmg = dmg - Stats.Defense;
-		Stats.Health -= Mathf.Max(finalDmg, 1);
+		var newStats = new Stats(baseStats);
 
+		newStats.Level = Level;
+		newStats.MaxHealth = Mathf.FloorToInt(Mathf.Pow(Level, 2) + Level + (baseStats.MaxHealth - 2));
+		newStats.Health = newStats.MaxHealth;
+		newStats.MaxMana = Mathf.FloorToInt((Mathf.Pow(Level, 2) + Level) / 2 + (baseStats.MaxMana - 1));
+		newStats.Mana = newStats.MaxMana;
+		newStats.Attack = Mathf.FloorToInt(Mathf.Pow(Level, 2) + Level + (baseStats.Attack - 2));
+		newStats.Defense = Mathf.FloorToInt((Mathf.Pow(Level, 2) + Level) / 2 + (baseStats.Defense - 1));
+		newStats.Speed = baseStats.Speed + 5 * Mathf.FloorToInt(Level / 2);
+		newStats.Experience = ((Level - 1) * 10 + baseStats.Experience) * (IsMiniboss ? 2 : 1);
+		newStats.CriticalRate = IsMiniboss ? .25f : .15f;
+
+		SetStats(newStats);
+	}
+
+	public override void ApplyDamage(int dmg, float critDmg, bool isCrit)
+	{
+		base.ApplyDamage(dmg, critDmg, isCrit);
 		StateMachine?.CallDeferred(StateMachine.MethodName.ChangeState, "Hurt");
 
 		if (_healthBar is not null)
 		{
 			_healthBar.Value = Stats.Health;
+		}
+
+		if (_hpLabel is not null)
+		{
+			_hpLabel.Text = $"{Stats.Health}/{Stats.MaxHealth}";
 		}
 
 		if (Stats.Health <= 0)
@@ -159,8 +194,8 @@ public partial class Enemy : CharacterBody2D
 		{
 			var enemy = hurtBox.Subject as Player.Player;
 			var crit = GD.Randf();
-			var dmg = crit <= Stats.CriticalRate ? Mathf.FloorToInt(Stats.Attack * Stats.CriticalDamage) : Stats.Attack;
-			enemy?.ApplyDamage(dmg);
+			var isCrit = crit <= Stats.CriticalRate;
+			enemy?.ApplyDamage(Stats.Attack, Stats.CriticalDamage, isCrit);
 		}
 	}
 

@@ -1,7 +1,22 @@
-[gd_scene load_steps=14 format=3 uid="uid://ceunla3edid8o"]
+[gd_scene load_steps=16 format=3 uid="uid://ceunla3edid8o"]
 
 [ext_resource type="Texture2D" uid="uid://biwwu46f7rudk" path="res://Assets/Sprites/Egg.png" id="1_3oarb"]
 [ext_resource type="Script" uid="uid://dh38v5f5udeh0" path="res://Scripts/Objects/Egg.cs" id="1_ybp4c"]
+[ext_resource type="Script" uid="uid://crrll72xfkrws" path="res://Scripts/Characters/Stats.cs" id="2_2n00a"]
+
+[sub_resource type="Resource" id="Resource_2n00a"]
+script = ExtResource("2_2n00a")
+Level = 1
+Health = 0
+MaxHealth = 0
+Mana = 0
+MaxMana = 0
+Attack = 0
+Defense = 0
+Speed = 0.0
+CriticalRate = 0.05
+CriticalDamage = 1.5
+Experience = 0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ybp4c"]
 atlas = ExtResource("1_3oarb")
@@ -94,6 +109,7 @@ radius = 6.0
 collision_layer = 4
 collision_mask = 18
 script = ExtResource("1_ybp4c")
+Stats = SubResource("Resource_2n00a")
 
 [node name="Animations" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true

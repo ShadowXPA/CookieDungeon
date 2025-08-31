@@ -5,12 +5,11 @@ using Godot;
 
 namespace CookieDungeon.Scripts.Characters.Player;
 
-public partial class Player : CharacterBody2D
+public partial class Player : Character
 {
 	[Export]
 	public StateMachine? StateMachine { get; set; }
-	[Export]
-	public Stats Stats { get; private set; } = new();
+	public Stats EggStats { get; private set; } = new();
 	public Skills Skills { get; set; } = new();
 	public IInputController InputController { get; private set; } = PlayerInputController.Instance;
 	public AnimatedSprite2D? Character { get; private set; }
@@ -21,10 +20,12 @@ public partial class Player : CharacterBody2D
 	public Node2D? CharacterBoxes { get; private set; }
 
 	private Marker2D? _teleportTarget;
+	private Label? _statsLabel;
 
 	public override void _Ready()
 	{
 		Stats = new(ResourceManager.Load<Stats>(ResourceManager.Identifier.PlayerStats));
+		EggStats = new(ResourceManager.Load<Stats>(ResourceManager.Identifier.EggStats));
 
 		Character = GetNode<AnimatedSprite2D>("%Character");
 		Animations = GetNode<AnimationPlayer>("%Animations");
@@ -33,6 +34,9 @@ public partial class Player : CharacterBody2D
 		WeaponHitBox = GetNode<Area2D>("%HitBox");
 		CharacterBoxes = GetNode<Node2D>("%CharacterBoxes");
 		var stateLabel = GetNode<Label>("%StateLabel");
+		_statsLabel = GetNode<Label>("%StatsLabel");
+
+		_statsLabel.Text = $"{Stats.Attack}\n{Stats.Defense}";
 
 		SignalBus.BroadcastLevelUpdated(Stats.Level);
 		SignalBus.BroadcastHealthUpdated(Stats.Health, Stats.MaxHealth);
@@ -109,10 +113,9 @@ public partial class Player : CharacterBody2D
 		}
 	}
 
-	public void ApplyDamage(int dmg)
+	public override void ApplyDamage(int dmg, float critDmg, bool isCrit)
 	{
-		var finalDmg = dmg - Stats.Defense;
-		Stats.Health -= Mathf.Max(finalDmg, 1);
+		base.ApplyDamage(dmg, critDmg, isCrit);
 		SignalBus.BroadcastHealthUpdated(Stats.Health, Stats.MaxHealth);
 
 		StateMachine?.CallDeferred(StateMachine.MethodName.ChangeState, "Hurt");
@@ -126,9 +129,15 @@ public partial class Player : CharacterBody2D
 	private void MonsterKilled(int experience)
 	{
 		Stats.AddExperience(experience);
-        SignalBus.BroadcastLevelUpdated(Stats.Level);
-        SignalBus.BroadcastHealthUpdated(Stats.Health, Stats.MaxHealth);
-        SignalBus.BroadcastManaUpdated(Stats.Mana, Stats.MaxMana);
+		EggStats.AddExperience(experience);
+		SignalBus.BroadcastLevelUpdated(Stats.Level);
+		SignalBus.BroadcastHealthUpdated(Stats.Health, Stats.MaxHealth);
+		SignalBus.BroadcastManaUpdated(Stats.Mana, Stats.MaxMana);
+
+		if (_statsLabel is not null)
+		{
+			_statsLabel.Text = $"{Stats.Attack}\n{Stats.Defense}";
+		}
 	}
 
 	private void DamageEnemy(Node2D body)
@@ -136,8 +145,8 @@ public partial class Player : CharacterBody2D
 		if (body is Enemy.Enemy enemy)
 		{
 			var crit = GD.Randf();
-			var dmg = crit <= Stats.CriticalRate ? Mathf.FloorToInt(Stats.Attack * Stats.CriticalDamage) : Stats.Attack;
-			enemy.ApplyDamage(dmg);
+			var isCrit = crit <= Stats.CriticalRate;
+			enemy.ApplyDamage(Stats.Attack, Stats.CriticalDamage, isCrit);
 		}
 	}
 }

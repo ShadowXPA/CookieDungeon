@@ -12,5 +12,5 @@ public partial class Skill : Resource
     public float CurrentCooldown { get; set; }
     [Export]
     public int Cost { get; set; }
-    public bool CanCast(int mana) => Cost <= mana && CurrentCooldown <= 0;
+    public bool CanCast(int? mana = null, bool ignoreCooldown = false) => Cost <= (mana ?? Cost) && (ignoreCooldown || CurrentCooldown <= 0);
 }

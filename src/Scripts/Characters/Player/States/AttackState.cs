@@ -19,9 +19,7 @@ public partial class AttackState : State
         if (subject is null) return;
 
         subject.Velocity = Vector2.Zero;
-        subject.Stats.Mana -= subject.Skills.NormalAttack.Cost;
         subject.Skills.NormalAttack.CurrentCooldown = subject.Skills.NormalAttack.Cooldown;
-        SignalBus.BroadcastManaUpdated(subject.Stats.Mana, subject.Stats.MaxMana);
 
         _target = subject.InputController.GetTargetPosition(subject);
 
@@ -61,9 +59,16 @@ public partial class AttackState : State
     public void SpawnEgg()
     {
         var subject = GetSubject<Player>();
-        if (subject is null || subject.ProjectileContainer is null || subject.ProjectileSpawner is null || _target is null) return;
+        if (subject is null ||
+            subject.ProjectileContainer is null ||
+            subject.ProjectileSpawner is null ||
+            _target is null ||
+            !subject.Skills.NormalAttack.CanCast(subject.Stats.Mana + subject.Stats.Level, ignoreCooldown: true)) return;
 
+        subject.Stats.Mana -= subject.Skills.NormalAttack.Cost + subject.Stats.Level;
+        SignalBus.BroadcastManaUpdated(subject.Stats.Mana, subject.Stats.MaxMana);
         var egg = _eggScene.Instantiate<Egg>();
+        egg.SetStats(subject.EggStats);
         subject.ProjectileContainer.AddChild(egg);
         egg.GlobalPosition = subject.ProjectileSpawner.GlobalPosition;
         egg.MoveTowardTarget((Vector2)_target, ((Vector2)_target - subject.ProjectileSpawner.GlobalPosition).Normalized());

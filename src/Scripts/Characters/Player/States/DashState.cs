@@ -16,7 +16,7 @@ public partial class DashState : State
         if (subject is null) return;
 
         subject.Velocity = Vector2.Zero;
-        subject.Stats.Mana -= subject.Skills.Dash.Cost;
+        subject.Stats.Mana -= subject.Skills.Dash.Cost + subject.Stats.Level;
         subject.Skills.Dash.CurrentCooldown = subject.Skills.Dash.Cooldown;
         SignalBus.BroadcastManaUpdated(subject.Stats.Mana, subject.Stats.MaxMana);
         SignalBus.BroadcastDashCooldownUpdated(subject.Skills.Dash.CurrentCooldown, subject.Skills.Dash.Cooldown);

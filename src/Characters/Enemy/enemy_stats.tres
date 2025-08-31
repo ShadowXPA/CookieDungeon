@@ -14,4 +14,5 @@ Defense = 2
 Speed = 200.0
 CriticalRate = 0.15
 CriticalDamage = 1.5
+Experience = 50
 metadata/_custom_type_script = "uid://crrll72xfkrws"
